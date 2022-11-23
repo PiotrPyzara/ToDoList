@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const MONGODB_URI =
-  'mongodb+srv://admin:vnUDPAUzwu1bQXcN@cluster0.x6il2.mongodb.net/shop?retryWrites=true&w=majority';
+  'mongodb+srv://admin:vnUDPAUzwu1bQXcN@cluster0.x6il2.mongodb.net/todolist?retryWrites=true&w=majority';
 
 const app = express();
 
