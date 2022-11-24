@@ -9,7 +9,12 @@
   <body>
     <h1>Lista rzeczy do zrobienia</h1>
     <form action="/task/edit" method="post">
-      <input type="text" name="taskname" id="taskname" />
+      <input
+        type="text"
+        name="taskname"
+        id="taskname"
+        value="<%= editInput %>"
+      />
       <button type="submit">Edytuj</button>
       <a href="/">Anuluj</a>
     </form>

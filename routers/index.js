@@ -10,7 +10,7 @@ router.get('/', taskController.getIndex);
 router.post('/task/create', taskController.createTask);
 
 // GET /task/edit/:taskID
-router.get('/task/edit/:taskID');
+router.get('/task/edit/:taskID', taskController.getTaskEdit);
 
 // POST /task/edit
 router.post('/task/edit');
