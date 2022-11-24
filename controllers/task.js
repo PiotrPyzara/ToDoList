@@ -53,7 +53,33 @@ exports.getTaskEdit = (req, res, next) => {
         pageTitle: 'Lista zadań',
         editInput: taskName,
         tasks: tasks,
+        taskID: taskID,
       });
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
+};
+
+exports.postEditTask = (req, res, next) => {
+  const taskID = req.body.taskID;
+  const taskName = req.body.taskname;
+
+  if (!taskName) {
+    return res.redirect('/');
+  }
+  Task.findById(taskID)
+    .then((task) => {
+      if (!task) {
+        return res.redirect('/');
+      }
+      task.name = taskName;
+      return task.save();
+    })
+    .then((result) => {
+      res.redirect('/');
     })
     .catch((err) => {
       const error = new Error(err);

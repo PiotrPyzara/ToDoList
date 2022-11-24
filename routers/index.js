@@ -13,7 +13,7 @@ router.post('/task/create', taskController.createTask);
 router.get('/task/edit/:taskID', taskController.getTaskEdit);
 
 // POST /task/edit
-router.post('/task/edit');
+router.post('/task/edit', taskController.postEditTask);
 
 // POST /task/delete
 router.post('/task/delete');
