@@ -8,6 +8,10 @@
   </head>
   <body>
     <h1>Lista rzeczy do zrobienia</h1>
+    <form action="/task" method="post">
+      <input type="text" name="taskname" id="taskname" />
+      <button type="submit">Dodaj</button>
+    </form>
     <% if (tasks.length > 0) { %> <% for (let task of tasks) { %>
     <div><%= task.name %></div>
     <% } %> <% } %>
