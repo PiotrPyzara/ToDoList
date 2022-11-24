@@ -3,15 +3,15 @@
     <h1>Lista rzeczy do zrobienia</h1>
     <form action="/task/create" method="post">
       <input type="text" name="taskname" id="taskname" />
-      <button type="submit">Dodaj</button>
+      <button type="submit" class="btn">Dodaj</button>
     </form>
     <% if (tasks.length > 0) { %> <% for (let task of tasks) { %>
     <div>
       <%= task.name %>
       <form action="/task/delete" method="post">
-        <a href="/task/edit/<%= task._id %>">Edytuj</a>
+        <a href="/task/edit/<%= task._id %>" class="btn">Edytuj</a>
         <input type="hidden" name="taskID" value="<%= task._id %>" />
-        <button type="submit">Usuń</button>
+        <button type="submit" class="btn">Usuń</button>
       </form>
     </div>
     <% } %> <% } %>
