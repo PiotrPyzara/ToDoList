@@ -3,6 +3,7 @@ require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 const errorController = require('./controllers/error');
 
@@ -13,6 +14,9 @@ const app = express();
 // view engine set
 app.set('view engine', 'ejs');
 app.set('views', 'views');
+
+// body-parser middleware
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(indexRouters);
 
