@@ -8,5 +8,8 @@
   </head>
   <body>
     <h1>Lista rzeczy do zrobienia</h1>
+    <% if (tasks.length > 0) { %> <% for (let task of tasks) { %>
+    <div><%= task.name %></div>
+    <% } %> <% } %>
   </body>
 </html>

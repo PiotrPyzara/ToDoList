@@ -3,8 +3,7 @@ const Task = require('../models/task');
 exports.getIndex = (req, res, next) => {
   Task.find()
     .then((tasks) => {
-      console.log(tasks);
-      res.render('index');
+      res.render('index', { tasks: tasks });
     })
     .catch((err) => {
       console.log(err);
