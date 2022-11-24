@@ -1,6 +1,8 @@
 //config
 require('dotenv').config();
 
+const path = require('path');
+
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -15,9 +17,13 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
+// serving static file in /public middleware
+app.use(express.static(path.join(__dirname, 'public')));
+
 // body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// Routers index
 app.use(indexRouters);
 
 // error handler
