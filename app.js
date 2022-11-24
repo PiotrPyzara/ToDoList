@@ -8,6 +8,10 @@ const MONGODB_URI =
 
 const app = express();
 
+// view engine set
+app.set('view engine', 'ejs');
+app.set('views', 'views');
+
 app.use(indexRouters);
 
 mongoose
