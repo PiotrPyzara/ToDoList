@@ -87,3 +87,17 @@ exports.postEditTask = (req, res, next) => {
       return next(error);
     });
 };
+
+exports.postDeleteTask = (req, res, next) => {
+  const taskID = req.body.taskID;
+
+  Task.deleteOne({ _id: taskID })
+    .then((result) => {
+      res.redirect('/');
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
+};

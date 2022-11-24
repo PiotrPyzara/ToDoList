@@ -16,6 +16,6 @@ router.get('/task/edit/:taskID', taskController.getTaskEdit);
 router.post('/task/edit', taskController.postEditTask);
 
 // POST /task/delete
-router.post('/task/delete');
+router.post('/task/delete', taskController.postDeleteTask);
 
 module.exports = router;
