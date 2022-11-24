@@ -18,6 +18,10 @@ exports.getIndex = (req, res, next) => {
 exports.createTask = (req, res, next) => {
   const name = req.body.taskname;
 
+  if (!name) {
+    return res.redirect('/');
+  }
+
   const task = new Task({ name: name, finish: false });
   task
     .save()
