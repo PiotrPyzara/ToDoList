@@ -7,7 +7,7 @@ const taskController = require('../controllers/task');
 router.get('/', taskController.getIndex);
 
 // POST /task/create
-router.post('/task/create');
+router.post('/task/create', taskController.createTask);
 
 // GET /task/edit/:taskID
 router.get('/task/edit/:taskID');
