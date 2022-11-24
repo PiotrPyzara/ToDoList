@@ -13,7 +13,7 @@
       <button type="submit">Dodaj</button>
     </form>
     <% if (tasks.length > 0) { %> <% for (let task of tasks) { %>
-    <div><%= task.name %></div>
+    <div><%= task.name %> <a href="/task/edit/<%= task._id %>">Edytuj</a></div>
     <% } %> <% } %>
   </body>
 </html>
