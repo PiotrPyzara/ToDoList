@@ -61,6 +61,21 @@ input[type='text'] {
   align-items: center;
 }
 
+.item_task_name {
+  width: 70%;
+  word-wrap: break-word;
+  padding: 7px 10px;
+}
+
+.item_task_form {
+  width: 30%;
+}
+
+.item_task_form > .btn {
+  width: 48.5%;
+  padding: 7px 10px;
+}
+
 .wrapper {
   width: 600px;
   margin: auto;
