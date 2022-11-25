@@ -1,0 +1,93 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #16426d;
+}
+
+.btn {
+  background-color: #38648f;
+  border-radius: 12px;
+  border: 1px solid black;
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff;
+  font-family: Arial;
+  font-size: 16px;
+  padding: 7px 19px;
+  text-decoration: none;
+  text-shadow: 0px 1px 0px #2f6627;
+}
+.btn:hover {
+  background-color: #49759f;
+}
+.btn:active {
+  position: relative;
+  top: 1px;
+}
+
+input {
+  border-radius: 12px;
+  padding: 7px 10px;
+  text-shadow: 0px 1px 0px #2f6627;
+  box-sizing: border-box;
+}
+
+input[type='text'] {
+  width: 75%;
+}
+
+.task_btn_add {
+  width: 24%;
+}
+
+.edit {
+  width: 11.5%;
+  padding: 7px 10px;
+}
+
+.item_task {
+  border-radius: 12px;
+  border: 1px solid black;
+  padding: 7px 10px;
+  margin: 10px 0;
+  color: white;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item_task_name {
+  width: 70%;
+  word-wrap: break-word;
+  padding: 7px 10px;
+  text-align: left;
+}
+
+.item_task_form {
+  width: 30%;
+}
+
+.item_task_form > .btn {
+  width: 48.5%;
+  padding: 7px 10px;
+}
+
+.wrapper {
+  width: 600px;
+  margin: auto;
+  margin-top: 100px;
+  text-align: center;
+  /* From https://css.glass */
+  background: rgba(255, 255, 255, 0.11);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 1rem;
+}
