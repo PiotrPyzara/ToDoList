@@ -50,7 +50,7 @@ exports.getTaskEdit = (req, res, next) => {
     })
     .then((tasks) => {
       res.render('edit', {
-        pageTitle: 'Lista zadań',
+        pageTitle: 'Lista rzeczy do zrobienia',
         editInput: taskName,
         tasks: tasks,
         taskID: taskID,
