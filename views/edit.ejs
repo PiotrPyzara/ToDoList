@@ -1,5 +1,6 @@
 <%- include('./includes/head.ejs') %>
   <body>
+    <div class="wrapper">
     <h1>Lista rzeczy do zrobienia</h1>
     <form action="/task/edit" method="post">
       <input
@@ -9,18 +10,19 @@
         value="<%= editInput %>"
       />
       <input type="hidden" name="taskID" value="<%= taskID %>" />
-      <button type="submit">Edytuj</button>
-      <a href="/">Anuluj</a>
+      <button type="submit" class="btn task_btn_add edit">Edytuj</button>
+      <a href="/" class="btn task_btn_add edit">Anuluj</a>
     </form>
     <% if (tasks.length > 0) { %> <% for (let task of tasks) { %>
-    <div>
-      <%= task.name %>
-      <form action="/task/delete" method="post">
-        <a href="/task/edit/<%= task._id %>">Edytuj</a>
-        <input type="hidden" name="taskID" value="<%= task._id %>" />
-        <button type="submit">Usuń</button>
-      </form>
+        <div class="item_task">
+          <div><%= task.name %></div>
+          <form action="/task/delete" method="post">
+            <a href="/task/edit/<%= task._id %>" class="btn">Edytuj</a>
+            <input type="hidden" name="taskID" value="<%= task._id %>" />
+            <button type="submit" class="btn">Usuń</button>
+          </form>
+        </div>
+        <% } %> <% } %>
     </div>
-    <% } %> <% } %>
   </body>
 </html>

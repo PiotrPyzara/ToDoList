@@ -1,13 +1,14 @@
 <%- include('./includes/head.ejs') %>
   <body>
+    <div class="wrapper">
     <h1>Lista rzeczy do zrobienia</h1>
     <form action="/task/create" method="post">
-      <input type="text" name="taskname" id="taskname" />
-      <button type="submit" class="btn">Dodaj</button>
+      <input type="text" name="taskname" id="taskname"/>
+      <button type="submit" class="btn task_btn_add">Dodaj</button>
     </form>
     <% if (tasks.length > 0) { %> <% for (let task of tasks) { %>
-    <div>
-      <%= task.name %>
+    <div class="item_task">
+      <div><%= task.name %></div>
       <form action="/task/delete" method="post">
         <a href="/task/edit/<%= task._id %>" class="btn">Edytuj</a>
         <input type="hidden" name="taskID" value="<%= task._id %>" />
@@ -15,5 +16,6 @@
       </form>
     </div>
     <% } %> <% } %>
+  </div>
   </body>
 </html>
