@@ -15,8 +15,8 @@
     </form>
     <% if (tasks.length > 0) { %> <% for (let task of tasks) { %>
         <div class="item_task">
-          <div><%= task.name %></div>
-          <form action="/task/delete" method="post">
+          <div class="item_task_name"><%= task.name %></div>
+          <form action="/task/delete" method="post" class="item_task_form">
             <a href="/task/edit/<%= task._id %>" class="btn">Edytuj</a>
             <input type="hidden" name="taskID" value="<%= task._id %>" />
             <button type="submit" class="btn">Usuń</button>
