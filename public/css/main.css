@@ -1,3 +1,5 @@
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css');
+
 * {
   box-sizing: border-box;
 }
@@ -62,7 +64,7 @@ input[type='text'] {
 }
 
 .item_task_name {
-  width: 70%;
+  width: 65%;
   word-wrap: break-word;
   padding: 7px 10px;
   text-align: left;
@@ -105,4 +107,10 @@ input[type='text'] {
   border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 1rem;
   font-weight: bold;
+}
+
+.bi {
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: black;
 }

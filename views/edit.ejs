@@ -17,6 +17,7 @@
     </form>
     <% if (tasks.length > 0) { %> <% for (let task of tasks) { %>
         <div class="item_task">
+          <div><a href="/task/check/<%= task._id %>"><i class="bi <% if (!task.finish) { %>bi-circle<% } else { %>bi-check-circle<% } %>"></i></a></div>
           <div class="item_task_name"><%= task.name %></div>
           <form action="/task/delete" method="post" class="item_task_form">
             <a href="/task/edit/<%= task._id %>" class="btn">Edytuj</a>
