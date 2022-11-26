@@ -19,7 +19,7 @@ body {
   color: #ffffff;
   font-family: Arial;
   font-size: 16px;
-  padding: 7px 19px;
+  padding: 7px 10px;
   text-decoration: none;
   text-shadow: 0px 1px 0px #2f6627;
 }
@@ -43,12 +43,22 @@ input {
   box-sizing: border-box;
 }
 
-input[type='text'] {
-  width: 75%;
+/* input[type='text'] {
+  width: 70%;
+} */
+.edit_task_form {
+  width: 100%;
+  position: relative;
+  display: flex;
+}
+
+.edit_task_form > input[type='text'] {
+  width: 100%;
 }
 
 .task_btn_add {
-  width: 24%;
+  width: 40px;
+  height: 36px;
 }
 
 .edit {
@@ -69,19 +79,29 @@ input[type='text'] {
 }
 
 .item_task_name {
-  width: 65%;
-  word-wrap: break-word;
-  padding: 7px 10px;
+  width: 80%;
+  word-break: break-all;
   text-align: left;
+  padding: 7px 10px;
 }
 
 .item_task_form {
-  width: 30%;
+  width: 100%;
+  position: relative;
+  display: flex;
+}
+
+/* .item_task_form > * {
+  flex: 0 1 auto;
+} */
+
+.item_task_form > .item_task_menu {
+  margin-left: auto;
 }
 
 .item_task_form > .btn {
-  width: 48.5%;
-  padding: 7px 10px;
+  width: 10%;
+  height: 10%;
 }
 
 .wrapper {

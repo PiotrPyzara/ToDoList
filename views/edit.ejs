@@ -3,7 +3,7 @@
     <div class="wrapper">
     <h1>Lista rzeczy do zrobienia</h1>
     <% if (taskErrorMessage) { %><div class="task_error_message"><%= taskErrorMessage %></div><% } %>
-    <form action="/task/edit" method="post">
+    <form action="/task/edit" method="post" class="edit_task_form">
       <input
         type="text"
         name="taskname"
@@ -13,8 +13,8 @@
       <input type="hidden" name="taskID" value="<%= taskID %>" />
       <input type="hidden" name="editUrl" value="<%= editUrl %>"/>
       <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-      <button type="submit" class="btn task_btn_add edit">Edytuj</button>
-      <a href="/" class="btn task_btn_add edit">Anuluj</a>
+      <button type="submit" class="btn"><i class="bi bi-plus"></i></button>
+      <a href="/" class="btn"><i class="bi bi-x"></i></a>
     </form>
     <% if (tasks.length > 0) { %> <% for (let task of tasks) { %>
         <div class="item_task">
@@ -27,15 +27,14 @@
               <button type="submit" class="btn_none"><i class="bi <% if (!task.finish) { %>bi-circle<% } else { %>bi-check-circle<% } %>"></i></button>
             </form>
           </div>
-          <div class="item_task_name"><%= task.name %></div>
           <form action="/task/delete" method="post" class="item_task_form">
-            <a href="/task/edit/<%= task._id %>" class="btn">Edytuj</a>
+            <div class="item_task_name"><%= task.name %></div>
             <input type="hidden" name="taskID" value="<%= task._id %>" />
             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-            <button type="submit" class="btn">Usuń</button>
+            <div class="item_task_menu"><a href="/task/edit/<%= task._id %>" class="btn"><i class="bi bi-pencil-square"></i></a>
+              <button type="submit" class="btn"><i class="bi bi-x-circle"></i></button></div>
           </form>
         </div>
         <% } %> <% } %>
-    </div>
   </body>
 </html>
