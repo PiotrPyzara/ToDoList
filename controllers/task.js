@@ -1,6 +1,7 @@
 const task = require('../models/task');
 const Task = require('../models/task');
 const { validationResult } = require('express-validator');
+const { default: mongoose } = require('mongoose');
 
 exports.getIndex = (req, res, next) => {
   Task.find()
@@ -57,37 +58,41 @@ exports.getTaskEdit = (req, res, next) => {
   const taskID = req.params.taskID;
   let taskName;
 
-  Task.findById(taskID)
-    .then((task) => {
-      if (!task) {
-        return res.redirect('/');
-      }
-      taskName = task.name;
-      return Task.find();
-    })
-    .then((tasks) => {
-      res.render('edit', {
-        pageTitle: 'Lista rzeczy do zrobienia',
-        editInput: taskName,
-        tasks: tasks,
-        taskID: taskID,
-        taskErrorMessage: '',
-        editUrl: req.url,
-        editID: taskID,
+  if (!mongoose.isValidObjectId(taskID)) {
+    return res.redirect('/');
+  } else {
+    Task.findById(taskID)
+      .then((task) => {
+        if (!task) {
+          return res.redirect('/');
+        }
+        taskName = task.name;
+        return Task.find();
+      })
+      .then((tasks) => {
+        res.render('edit', {
+          pageTitle: 'Lista rzeczy do zrobienia',
+          editInput: taskName,
+          tasks: tasks,
+          taskID: taskID,
+          taskErrorMessage: '',
+          editUrl: req.url,
+          editID: taskID,
+        });
+      })
+      .catch((err) => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
       });
-    })
-    .catch((err) => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
-    });
+  }
 };
 
 exports.postEditTask = (req, res, next) => {
   const taskID = req.body.taskID || req.body.editID;
   const taskName = req.body.taskname;
   const editMode = req.body.editMode;
-  const editUrl = req.body.editUrl;
+  let editUrl = req.body.editUrl;
 
   const errors = validationResult(req);
 
@@ -116,6 +121,7 @@ exports.postEditTask = (req, res, next) => {
           task.finish = !task.finish;
         } else {
           task.name = taskName;
+          editUrl = '/';
         }
         return task.save();
       })
