@@ -8,13 +8,25 @@ const taskController = require('../controllers/task');
 router.get('/', taskController.getIndex);
 
 // POST /task/create
-router.post('/task/create', taskController.createTask);
+router.post(
+  '/task/create',
+  body('taskname', 'Zadanie musi mieć conajmniej 3 znaki.').isLength({
+    min: 3,
+  }),
+  taskController.createTask
+);
 
 // GET /task/edit/:taskID
 router.get('/task/edit/:taskID', taskController.getTaskEdit);
 
 // POST /task/edit
-router.post('/task/edit', taskController.postEditTask);
+router.post(
+  '/task/edit',
+  body('taskname', 'Zadanie musi mieć conajmniej 3 znaki.').isLength({
+    min: 3,
+  }),
+  taskController.postEditTask
+);
 
 // POST /task/delete
 router.post('/task/delete', taskController.postDeleteTask);
