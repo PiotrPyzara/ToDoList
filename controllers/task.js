@@ -1,5 +1,6 @@
 const task = require('../models/task');
 const Task = require('../models/task');
+const { validationResult } = require('express-validator');
 
 exports.getIndex = (req, res, next) => {
   Task.find()
@@ -20,21 +21,35 @@ exports.getIndex = (req, res, next) => {
 exports.createTask = (req, res, next) => {
   const name = req.body.taskname;
 
-  if (!name) {
-    return res.redirect('/');
-  }
+  const errors = validationResult(req);
 
-  const task = new Task({ name: name, finish: false });
-  task
-    .save()
-    .then((result) => {
-      res.redirect('/');
-    })
-    .catch((err) => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
-    });
+  if (errors.isEmpty()) {
+    const task = new Task({ name: name, finish: false });
+    task
+      .save()
+      .then((result) => {
+        res.redirect('/');
+      })
+      .catch((err) => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
+      });
+  } else {
+    Task.find()
+      .then((tasks) => {
+        return res.status(422).render('index', {
+          pageTitle: 'Lista rzeczy do zrobienia',
+          tasks: tasks,
+          taskErrorMessage: errors.array()[0].msg,
+        });
+      })
+      .catch((err) => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
+      });
+  }
 };
 
 exports.getTaskEdit = (req, res, next) => {
@@ -69,25 +84,42 @@ exports.postEditTask = (req, res, next) => {
   const taskID = req.body.taskID;
   const taskName = req.body.taskname;
 
-  if (!taskName) {
-    return res.redirect('/');
+  const errors = validationResult(req);
+
+  if (errors.isEmpty()) {
+    Task.findById(taskID)
+      .then((task) => {
+        if (!task) {
+          return res.redirect('/');
+        }
+        task.name = taskName;
+        return task.save();
+      })
+      .then((result) => {
+        res.redirect('/');
+      })
+      .catch((err) => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
+      });
+  } else {
+    Task.find()
+      .then((tasks) => {
+        return res.status(422).render('edit', {
+          pageTitle: 'Lista rzeczy do zrobienia',
+          tasks: tasks,
+          taskErrorMessage: errors.array()[0].msg,
+          editInput: taskName,
+          taskID: taskID,
+        });
+      })
+      .catch((err) => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
+      });
   }
-  Task.findById(taskID)
-    .then((task) => {
-      if (!task) {
-        return res.redirect('/');
-      }
-      task.name = taskName;
-      return task.save();
-    })
-    .then((result) => {
-      res.redirect('/');
-    })
-    .catch((err) => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
-    });
 };
 
 exports.postDeleteTask = (req, res, next) => {
