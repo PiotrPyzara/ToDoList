@@ -20,7 +20,7 @@ exports.getIndex = (req, res, next) => {
     });
 };
 
-exports.createTask = (req, res, next) => {
+exports.postCreateTask = (req, res, next) => {
   const name = req.body.taskname;
 
   const errors = validationResult(req);

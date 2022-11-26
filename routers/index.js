@@ -13,7 +13,7 @@ router.post(
   body('taskname', 'Zadanie musi mieć conajmniej 3 znaki.').isLength({
     min: 3,
   }),
-  taskController.createTask
+  taskController.postCreateTask
 );
 
 // GET /task/edit/:taskID
