@@ -2,7 +2,7 @@
   <body>
     <div class="wrapper">
     <h1>Lista rzeczy do zrobienia</h1>
-    <% if (taskErrorMessage) { %><div class="task_error_message">Błąd</div><% } %>
+    <% if (taskErrorMessage) { %><div class="task_error_message"><%= taskErrorMessage %></div><% } %>
     <form action="/task/create" method="post">
       <input type="text" name="taskname" id="taskname"/>
       <button type="submit" class="btn task_btn_add">Dodaj</button>
