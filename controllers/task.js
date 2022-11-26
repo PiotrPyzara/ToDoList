@@ -7,6 +7,7 @@ exports.getIndex = (req, res, next) => {
       res.render('index', {
         pageTitle: 'Lista rzeczy do zrobienia',
         tasks: tasks,
+        taskErrorMessage: '',
       });
     })
     .catch((err) => {
@@ -54,6 +55,7 @@ exports.getTaskEdit = (req, res, next) => {
         editInput: taskName,
         tasks: tasks,
         taskID: taskID,
+        taskErrorMessage: '',
       });
     })
     .catch((err) => {
