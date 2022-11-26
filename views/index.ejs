@@ -5,6 +5,7 @@
     <% if (taskErrorMessage) { %><div class="task_error_message"><%= taskErrorMessage %></div><% } %>
     <form action="/task/create" method="post">
       <input type="text" name="taskname" id="taskname"/>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
       <button type="submit" class="btn task_btn_add">Dodaj</button>
     </form>
     <% if (tasks.length > 0) { %> <% for (let task of tasks) { %>
@@ -13,6 +14,7 @@
       <form action="/task/delete" method="post" class="item_task_form">
         <a href="/task/edit/<%= task._id %>" class="btn">Edytuj</a>
         <input type="hidden" name="taskID" value="<%= task._id %>" />
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <button type="submit" class="btn">Usuń</button>
       </form>
     </div>

@@ -11,6 +11,7 @@
         value="<%= editInput %>"
       />
       <input type="hidden" name="taskID" value="<%= taskID %>" />
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
       <button type="submit" class="btn task_btn_add edit">Edytuj</button>
       <a href="/" class="btn task_btn_add edit">Anuluj</a>
     </form>
@@ -20,6 +21,7 @@
           <form action="/task/delete" method="post" class="item_task_form">
             <a href="/task/edit/<%= task._id %>" class="btn">Edytuj</a>
             <input type="hidden" name="taskID" value="<%= task._id %>" />
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
             <button type="submit" class="btn">Usuń</button>
           </form>
         </div>

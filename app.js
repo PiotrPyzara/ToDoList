@@ -6,12 +6,22 @@ const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
+const csrf = require('csurf');
 
 const errorController = require('./controllers/error');
 
 const indexRouters = require('./routers/index');
 
+// app express init
 const app = express();
+
+// store session in mongodb
+const store = new MongoDBStore({
+  uri: process.env.MONGODB_URI,
+  collection: 'sessions',
+});
 
 // view engine set
 app.set('view engine', 'ejs');
@@ -22,6 +32,26 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// session middleware
+app.use(
+  session({
+    secret: 'my secret',
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+  })
+);
+
+// csrf middleware
+const csrfProtection = csrf();
+app.use(csrfProtection);
+
+// csrf local middleware
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
 
 // Routers index
 app.use(indexRouters);
