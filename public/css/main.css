@@ -31,6 +31,11 @@ body {
   top: 1px;
 }
 
+.btn_none {
+  background: transparent;
+  border: none;
+}
+
 input {
   border-radius: 12px;
   padding: 7px 10px;
