@@ -186,6 +186,7 @@ exports.postEditTask = (req, res, next) => {
       .then((task) => {
         if (editMode) {
           task.finish = !task.finish;
+          editUrl = '/?page=' + page;
         } else {
           task.name = taskName;
           editUrl = '/?page=' + page;
