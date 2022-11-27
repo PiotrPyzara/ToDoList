@@ -4,7 +4,7 @@
     <h1>Lista rzeczy do zrobienia</h1>
     <% if (taskErrorMessage) { %><div class="task_error_message"><%= taskErrorMessage %></div><% } %>
     <form action="/task/create" method="post" class="edit_task_form">
-      <input type="text" name="taskname" id="taskname"/>
+      <input type="text" name="taskname" id="taskname" value="<%= editInput %>" autocomplete="off" placeholder="Wprowadź nazwę zadania"/>
       <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
       <input type="hidden" name="currentPage" value="<%= currentPage %>">
       <button type="submit" class="btn"><i class="bi bi-plus"></i></button>

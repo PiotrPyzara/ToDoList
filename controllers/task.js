@@ -29,6 +29,7 @@ exports.getIndex = (req, res, next) => {
         nextPage: page + 1,
         backPage: page - 1,
         totalItems: totalItems,
+        editInput: '',
       });
     })
     .catch((err) => {
@@ -77,6 +78,7 @@ exports.postCreateTask = (req, res, next) => {
           nextPage: page + 1,
           backPage: page - 1,
           totalItems: totalItems,
+          editInput: name,
         });
       })
       .catch((err) => {
