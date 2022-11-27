@@ -139,3 +139,7 @@ input {
   cursor: pointer;
   color: black;
 }
+
+.pegnation {
+  padding-top: 1.5rem;
+}

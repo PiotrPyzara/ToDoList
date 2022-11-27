@@ -28,6 +28,7 @@ exports.getIndex = (req, res, next) => {
         hasBackPage: page > 1,
         nextPage: page + 1,
         backPage: page - 1,
+        totalItems: totalItems,
       });
     })
     .catch((err) => {
@@ -75,6 +76,7 @@ exports.postCreateTask = (req, res, next) => {
           hasBackPage: page > 1,
           nextPage: page + 1,
           backPage: page - 1,
+          totalItems: totalItems,
         });
       })
       .catch((err) => {
@@ -123,6 +125,7 @@ exports.getTaskEdit = (req, res, next) => {
           hasBackPage: page > 1,
           nextPage: page + 1,
           backPage: page - 1,
+          totalItems: totalItems,
         });
       })
       .catch((err) => {
@@ -168,6 +171,7 @@ exports.postEditTask = (req, res, next) => {
           hasBackPage: page > 1,
           nextPage: page + 1,
           backPage: page - 1,
+          totalItems: totalItems,
         });
       })
       .catch((err) => {

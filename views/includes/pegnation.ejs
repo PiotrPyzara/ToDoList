@@ -1,17 +1,17 @@
-<div>
+<div class="pegnation">
   <% if (hasBackPage) { %>
   <a href="?page=<%= backPage %>">
     <button class="btn">
       <i class="bi bi-arrow-left"></i>
     </button>
   </a>
-  <% } %>
+  <% } %> <% if (totalItems) { %>
   <a href="/">
     <button class="btn">
       <i class="bi bi-house"></i>
     </button>
   </a>
-  <% if (hasNextPage) { %>
+  <% } %> <% if (hasNextPage) { %>
   <a href="?page=<%= nextPage %>">
     <button class="btn">
       <i class="bi bi-arrow-right"></i>
