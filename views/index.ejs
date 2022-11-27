@@ -6,6 +6,7 @@
     <form action="/task/create" method="post" class="edit_task_form">
       <input type="text" name="taskname" id="taskname"/>
       <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <input type="hidden" name="currentPage" value="<%= currentPage %>">
       <button type="submit" class="btn"><i class="bi bi-plus"></i></button>
     </form>
     <% if (tasks.length > 0) { %> <% for (let task of tasks) { %>
@@ -15,6 +16,7 @@
           <input type="hidden" name="editMode" value="true" />
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <input type="hidden" name="taskID" value="<%= task._id %>" />
+          <input type="hidden" name="currentPage" value="<%= currentPage %>">
           <button type="submit" class="btn_none"><i class="bi <% if (!task.finish) { %>bi-circle<% } else { %>bi-check-circle<% } %>"></i></button>
         </form>
       </div>

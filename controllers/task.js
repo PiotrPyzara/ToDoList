@@ -3,14 +3,31 @@ const Task = require('../models/task');
 const { validationResult } = require('express-validator');
 const { default: mongoose } = require('mongoose');
 
+const ITEMS_PER_PAGE = 5;
+
 exports.getIndex = (req, res, next) => {
+  let totalItems;
+  const page = parseInt(req.query.page) || 1;
+
   Task.find()
+    .count()
+    .then((num) => {
+      totalItems = num;
+      return Task.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((tasks) => {
       res.render('index', {
         pageTitle: 'Lista rzeczy do zrobienia',
         tasks: tasks,
         taskErrorMessage: '',
         editUrl: '',
+        currentPage: page,
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        hasBackPage: page > 1,
+        nextPage: page + 1,
+        backPage: page - 1,
       });
     })
     .catch((err) => {
@@ -24,13 +41,15 @@ exports.postCreateTask = (req, res, next) => {
   const name = req.body.taskname;
 
   const errors = validationResult(req);
+  let totalItems;
+  const page = parseInt(req.body.currentPage);
 
   if (errors.isEmpty()) {
     const task = new Task({ name: name, finish: false });
     task
       .save()
       .then((result) => {
-        res.redirect('/');
+        res.redirect('/?page=' + page);
       })
       .catch((err) => {
         const error = new Error(err);
@@ -39,11 +58,23 @@ exports.postCreateTask = (req, res, next) => {
       });
   } else {
     Task.find()
+      .count()
+      .then((num) => {
+        totalItems = num;
+        return Task.find()
+          .skip((page - 1) * ITEMS_PER_PAGE)
+          .limit(ITEMS_PER_PAGE);
+      })
       .then((tasks) => {
         return res.status(422).render('index', {
           pageTitle: 'Lista rzeczy do zrobienia',
           tasks: tasks,
           taskErrorMessage: errors.array()[0].msg,
+          currentPage: page,
+          hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+          hasBackPage: page > 1,
+          nextPage: page + 1,
+          backPage: page - 1,
         });
       })
       .catch((err) => {
@@ -57,6 +88,8 @@ exports.postCreateTask = (req, res, next) => {
 exports.getTaskEdit = (req, res, next) => {
   const taskID = req.params.taskID;
   let taskName;
+  let totalItems;
+  const page = parseInt(req.query.page) || 1;
 
   if (!mongoose.isValidObjectId(taskID)) {
     return res.redirect('/');
@@ -67,7 +100,14 @@ exports.getTaskEdit = (req, res, next) => {
           return res.redirect('/');
         }
         taskName = task.name;
-        return Task.find();
+        return Task.find()
+          .count()
+          .then((num) => {
+            totalItems = num;
+            return Task.find()
+              .skip((page - 1) * ITEMS_PER_PAGE)
+              .limit(ITEMS_PER_PAGE);
+          });
       })
       .then((tasks) => {
         res.render('edit', {
@@ -78,6 +118,11 @@ exports.getTaskEdit = (req, res, next) => {
           taskErrorMessage: '',
           editUrl: req.url,
           editID: taskID,
+          currentPage: page,
+          hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+          hasBackPage: page > 1,
+          nextPage: page + 1,
+          backPage: page - 1,
         });
       })
       .catch((err) => {
@@ -93,10 +138,21 @@ exports.postEditTask = (req, res, next) => {
   const taskName = req.body.taskname;
   const editMode = req.body.editMode;
   let editUrl = req.body.editUrl;
+  let totalItems;
+  // const page = parseInt(req.body.currentPage);
+  const page = req.body.currentPage;
 
   const errors = validationResult(req);
 
   if (!errors.isEmpty() && !editMode) {
+    Task.find()
+      .count()
+      .then((num) => {
+        totalItems = num;
+        return Task.find()
+          .skip((page - 1) * ITEMS_PER_PAGE)
+          .limit(ITEMS_PER_PAGE);
+      });
     Task.find()
       .then((tasks) => {
         return res.status(422).render('edit', {
@@ -107,6 +163,11 @@ exports.postEditTask = (req, res, next) => {
           taskID: taskID,
           editUrl: editUrl,
           editID: taskID,
+          currentPage: page,
+          hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+          hasBackPage: page > 1,
+          nextPage: page + 1,
+          backPage: page - 1,
         });
       })
       .catch((err) => {
@@ -121,7 +182,7 @@ exports.postEditTask = (req, res, next) => {
           task.finish = !task.finish;
         } else {
           task.name = taskName;
-          editUrl = '/';
+          editUrl = '/?page=' + page;
         }
         return task.save();
       })
@@ -134,58 +195,6 @@ exports.postEditTask = (req, res, next) => {
         return next(error);
       });
   }
-
-  // if (editMode) {
-  //   Task.findById(taskID)
-  //     .then((task) => {
-  //       if (!task) {
-  //         return res.redirect('/');
-  //       }
-  //       task.finish = !task.finish;
-  //       return task.save();
-  //     })
-  //     .then((result) => {
-  //       res.redirect('/');
-  //     })
-  //     .catch((err) => {
-  //       const error = new Error(err);
-  //       error.httpStatusCode = 500;
-  //       return next(error);
-  //     });
-  // } else if (errors.isEmpty() && !editMode) {
-  //   Task.findById(taskID)
-  //     .then((task) => {
-  //       if (!task) {
-  //         return res.redirect('/');
-  //       }
-  //       task.name = taskName;
-  //       return task.save();
-  //     })
-  //     .then((result) => {
-  //       res.redirect('/');
-  //     })
-  //     .catch((err) => {
-  //       const error = new Error(err);
-  //       error.httpStatusCode = 500;
-  //       return next(error);
-  //     });
-  // } else {
-  //   Task.find()
-  //     .then((tasks) => {
-  //       return res.status(422).render('edit', {
-  //         pageTitle: 'Lista rzeczy do zrobienia',
-  //         tasks: tasks,
-  //         taskErrorMessage: errors.array()[0].msg,
-  //         editInput: taskName,
-  //         taskID: taskID,
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       const error = new Error(err);
-  //       error.httpStatusCode = 500;
-  //       return next(error);
-  //     });
-  //}
 };
 
 exports.postDeleteTask = (req, res, next) => {
