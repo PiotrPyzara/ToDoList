@@ -110,69 +110,58 @@ exports.getTaskEdit = async (req, res, next) => {
   }
 };
 
-exports.postEditTask = (req, res, next) => {
+exports.postEditTask = async (req, res, next) => {
   const taskID = req.body.taskID || req.body.editID;
   const taskName = req.body.taskname;
   const editMode = req.body.editMode;
-  let editUrl = req.body.editUrl;
-  let totalItems;
-  // const page = parseInt(req.body.currentPage);
-  const page = req.body.currentPage;
+  const page = +req.body.currentPage;
+  const editUrl = req.body.editUrl;
 
   const errors = validationResult(req);
 
-  if (!errors.isEmpty() && !editMode) {
-    Task.find()
-      .count()
-      .then((num) => {
-        totalItems = num;
-        return Task.find()
-          .skip((page - 1) * ITEMS_PER_PAGE)
-          .limit(ITEMS_PER_PAGE);
+  try {
+    const totalItems = await Task.find().count();
+    const tasks = await Task.find()
+      .skip((page - 1) * ITEMS_PER_PAGE)
+      .limit(ITEMS_PER_PAGE);
+
+    if (!errors.isEmpty() && !editMode) {
+      return res.status(422).render('edit', {
+        pageTitle: 'Lista rzeczy do zrobienia',
+        tasks: tasks,
+        taskErrorMessage: errors.array()[0].msg,
+        editInput: taskName,
+        taskID: taskID,
+        editUrl: editUrl,
+        editID: taskID,
+        currentPage: page,
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        hasBackPage: page > 1,
+        nextPage: page + 1,
+        backPage: page - 1,
+        totalItems: totalItems,
       });
-    Task.find()
-      .then((tasks) => {
-        return res.status(422).render('edit', {
-          pageTitle: 'Lista rzeczy do zrobienia',
-          tasks: tasks,
-          taskErrorMessage: errors.array()[0].msg,
-          editInput: taskName,
-          taskID: taskID,
-          editUrl: editUrl,
-          editID: taskID,
-          currentPage: page,
-          hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-          hasBackPage: page > 1,
-          nextPage: page + 1,
-          backPage: page - 1,
-          totalItems: totalItems,
-        });
-      })
-      .catch((err) => {
-        const error = new Error(err);
-        error.httpStatusCode = 500;
-        return next(error);
-      });
-  } else {
-    Task.findById(taskID)
-      .then((task) => {
-        if (editMode) {
-          task.finish = !task.finish;
-          editUrl = '/?page=' + page;
-        } else {
-          task.name = taskName;
-          editUrl = '/?page=' + page;
-        }
-        return task.save();
-      })
-      .then((result) => {
-        return res.redirect(editUrl || '/');
-      })
-      .catch((err) => {
-        const error = new Error(err);
-        error.httpStatusCode = 500;
-        return next(error);
-      });
+    }
+
+    if (!mongoose.isValidObjectId(taskID)) {
+      return res.redirect('/');
+    }
+
+    const task = await Task.findById(taskID);
+
+    if (editMode) {
+      task.finish = !task.finish;
+    } else {
+      task.name = taskName;
+    }
+
+    await task.save();
+
+    return res.redirect(editMode ? editUrl : '/');
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
