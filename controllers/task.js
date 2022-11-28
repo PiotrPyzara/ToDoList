@@ -165,16 +165,15 @@ exports.postEditTask = async (req, res, next) => {
   }
 };
 
-exports.postDeleteTask = (req, res, next) => {
+exports.postDeleteTask = async (req, res, next) => {
   const taskID = req.body.taskID;
 
-  Task.deleteOne({ _id: taskID })
-    .then((result) => {
-      res.redirect('/');
-    })
-    .catch((err) => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
-    });
+  try {
+    await Task.deleteOne({ _id: taskID });
+    return res.redirect('/');
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
+  }
 };
