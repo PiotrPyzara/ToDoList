@@ -70,96 +70,43 @@ exports.postCreateTask = async (req, res, next) => {
     error.httpStatusCode = 500;
     return next(error);
   }
-
-  // if (errors.isEmpty()) {
-  //   const task = new Task({ name: name, finish: false });
-  //   task
-  //     .save()
-  //     .then((result) => {
-  //       res.redirect('/?page=' + page);
-  //     })
-  //     .catch((err) => {
-  //       const error = new Error(err);
-  //       error.httpStatusCode = 500;
-  //       return next(error);
-  //     });
-  // } else {
-  //   Task.find()
-  //     .count()
-  //     .then((num) => {
-  //       totalItems = num;
-  //       return Task.find()
-  //         .skip((page - 1) * ITEMS_PER_PAGE)
-  //         .limit(ITEMS_PER_PAGE);
-  //     })
-  //     .then((tasks) => {
-  //       return res.status(422).render('index', {
-  //         pageTitle: 'Lista rzeczy do zrobienia',
-  //         tasks: tasks,
-  //         taskErrorMessage: errors.array()[0].msg,
-  //         currentPage: page,
-  //         hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-  //         hasBackPage: page > 1,
-  //         nextPage: page + 1,
-  //         backPage: page - 1,
-  //         totalItems: totalItems,
-  //         editInput: name,
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       const error = new Error(err);
-  //       error.httpStatusCode = 500;
-  //       return next(error);
-  //     });
-  // }
 };
 
-exports.getTaskEdit = (req, res, next) => {
+exports.getTaskEdit = async (req, res, next) => {
   const taskID = req.params.taskID;
-  let taskName;
-  let totalItems;
-  const page = parseInt(req.query.page) || 1;
+  const page = +req.query.page || 1;
 
-  if (!mongoose.isValidObjectId(taskID)) {
-    return res.redirect('/');
-  } else {
-    Task.findById(taskID)
-      .then((task) => {
-        if (!task) {
-          return res.redirect('/');
-        }
-        taskName = task.name;
-        return Task.find()
-          .count()
-          .then((num) => {
-            totalItems = num;
-            return Task.find()
-              .skip((page - 1) * ITEMS_PER_PAGE)
-              .limit(ITEMS_PER_PAGE);
-          });
-      })
-      .then((tasks) => {
-        res.render('edit', {
-          pageTitle: 'Lista rzeczy do zrobienia',
-          editInput: taskName,
-          tasks: tasks,
-          taskID: taskID,
-          taskErrorMessage: '',
-          editUrl: req.url,
-          editID: taskID,
-          currentPage: page,
-          hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-          hasBackPage: page > 1,
-          nextPage: page + 1,
-          backPage: page - 1,
-          totalItems: totalItems,
-        });
-      })
-      .catch((err) => {
-        const error = new Error(err);
-        error.httpStatusCode = 500;
-        return next(error);
-      });
+  try {
+    const totalItems = await Task.find().count();
+    const tasks = await Task.find()
+      .skip((page - 1) * ITEMS_PER_PAGE)
+      .limit(ITEMS_PER_PAGE);
+
+    if (!mongoose.isValidObjectId(taskID)) {
+      return res.redirect('/');
+    }
+
+    const taskName = (await Task.findById(taskID)).name;
+
+    res.render('edit', {
+      pageTitle: 'Lista rzeczy do zrobienia',
+      editInput: taskName,
+      tasks: tasks,
+      taskID: taskID,
+      taskErrorMessage: '',
+      editUrl: req.url,
+      editID: taskID,
+      currentPage: page,
+      hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+      hasBackPage: page > 1,
+      nextPage: page + 1,
+      backPage: page - 1,
+      totalItems: totalItems,
+    });
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
