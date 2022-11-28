@@ -32,85 +32,86 @@ exports.getIndex = async (req, res, next) => {
     error.httpStatusCode = 500;
     return next(error);
   }
-
-  // Task.find()
-  //   .count()
-  //   .then((num) => {
-  //     totalItems = num;
-  //     return Task.find()
-  //       .skip((page - 1) * ITEMS_PER_PAGE)
-  //       .limit(ITEMS_PER_PAGE);
-  //   })
-  //   .then((tasks) => {
-  //     res.render('index', {
-  //       pageTitle: 'Lista rzeczy do zrobienia',
-  //       tasks: tasks,
-  //       taskErrorMessage: '',
-  //       editUrl: '',
-  //       currentPage: page,
-  //       hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-  //       hasBackPage: page > 1,
-  //       nextPage: page + 1,
-  //       backPage: page - 1,
-  //       totalItems: totalItems,
-  //       editInput: '',
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     const error = new Error(err);
-  //     error.httpStatusCode = 500;
-  //     return next(error);
-  //   });
 };
 
-exports.postCreateTask = (req, res, next) => {
+exports.postCreateTask = async (req, res, next) => {
   const name = req.body.taskname;
 
   const errors = validationResult(req);
-  let totalItems;
-  const page = parseInt(req.body.currentPage);
+  const page = +req.body.currentPage;
 
-  if (errors.isEmpty()) {
-    const task = new Task({ name: name, finish: false });
-    task
-      .save()
-      .then((result) => {
-        res.redirect('/?page=' + page);
-      })
-      .catch((err) => {
-        const error = new Error(err);
-        error.httpStatusCode = 500;
-        return next(error);
+  try {
+    const totalItems = await Task.find().count();
+    const tasks = await Task.find()
+      .skip((page - 1) * ITEMS_PER_PAGE)
+      .limit(ITEMS_PER_PAGE);
+
+    if (!errors.isEmpty()) {
+      res.status(422).render('index', {
+        pageTitle: 'Lista rzeczy do zrobienia',
+        tasks: tasks,
+        taskErrorMessage: errors.array()[0].msg,
+        currentPage: page,
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        hasBackPage: page > 1,
+        nextPage: page + 1,
+        backPage: page - 1,
+        totalItems: totalItems,
+        editInput: name,
       });
-  } else {
-    Task.find()
-      .count()
-      .then((num) => {
-        totalItems = num;
-        return Task.find()
-          .skip((page - 1) * ITEMS_PER_PAGE)
-          .limit(ITEMS_PER_PAGE);
-      })
-      .then((tasks) => {
-        return res.status(422).render('index', {
-          pageTitle: 'Lista rzeczy do zrobienia',
-          tasks: tasks,
-          taskErrorMessage: errors.array()[0].msg,
-          currentPage: page,
-          hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-          hasBackPage: page > 1,
-          nextPage: page + 1,
-          backPage: page - 1,
-          totalItems: totalItems,
-          editInput: name,
-        });
-      })
-      .catch((err) => {
-        const error = new Error(err);
-        error.httpStatusCode = 500;
-        return next(error);
-      });
+    } else {
+      const task = new Task({ name: name, finish: false });
+      await task.save();
+
+      res.redirect('/?page=' + page);
+    }
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
+
+  // if (errors.isEmpty()) {
+  //   const task = new Task({ name: name, finish: false });
+  //   task
+  //     .save()
+  //     .then((result) => {
+  //       res.redirect('/?page=' + page);
+  //     })
+  //     .catch((err) => {
+  //       const error = new Error(err);
+  //       error.httpStatusCode = 500;
+  //       return next(error);
+  //     });
+  // } else {
+  //   Task.find()
+  //     .count()
+  //     .then((num) => {
+  //       totalItems = num;
+  //       return Task.find()
+  //         .skip((page - 1) * ITEMS_PER_PAGE)
+  //         .limit(ITEMS_PER_PAGE);
+  //     })
+  //     .then((tasks) => {
+  //       return res.status(422).render('index', {
+  //         pageTitle: 'Lista rzeczy do zrobienia',
+  //         tasks: tasks,
+  //         taskErrorMessage: errors.array()[0].msg,
+  //         currentPage: page,
+  //         hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+  //         hasBackPage: page > 1,
+  //         nextPage: page + 1,
+  //         backPage: page - 1,
+  //         totalItems: totalItems,
+  //         editInput: name,
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       const error = new Error(err);
+  //       error.httpStatusCode = 500;
+  //       return next(error);
+  //     });
+  // }
 };
 
 exports.getTaskEdit = (req, res, next) => {
