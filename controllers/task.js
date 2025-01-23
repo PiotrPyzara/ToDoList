@@ -1,4 +1,3 @@
-const task = require('../models/task');
 const Task = require('../models/task');
 const { validationResult } = require('express-validator');
 const { default: mongoose } = require('mongoose');
@@ -115,7 +114,7 @@ exports.postEditTask = async (req, res, next) => {
   const taskName = req.body.taskname;
   const editMode = req.body.editMode;
   const page = +req.body.currentPage;
-  const editUrl = req.body.editUrl;
+  const editUrl = (req.body.editUrl === undefined) ? '/' : req.body.editUrl;
 
   const errors = validationResult(req);
 
